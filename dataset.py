@@ -3,6 +3,7 @@ import torch
 import numpy as np
 from numpy import empty
 from torch.utils.data import DataLoader, IterableDataset
+import CSTR_functions_numba as CSTR_F
 from lti import drss_matrices, dlsim, nn_fun
 
 
@@ -117,7 +118,7 @@ class LinearDynamicalDataset(IterableDataset):
 
 
 class WHDataset(IterableDataset):
-    def __init__(self, nx=5, nu=1, ny=1, seq_len=600, noise=0.01, random_order=True,
+    def __init__(self, nx=5, nu=1, ny=1, seq_len=600, random_order=True,
                  strictly_proper=True, normalize=True, dtype="float32",
                  system_seed=None, input_seed=None, noise_seed=None,
                  **mdlargs):
@@ -126,7 +127,6 @@ class WHDataset(IterableDataset):
         self.nu = nu
         self.ny = ny
         self.seq_len = seq_len
-        self.noise = noise
         self.strictly_proper = strictly_proper
         self.dtype = dtype
         self.normalize = normalize
@@ -174,13 +174,11 @@ class WHDataset(IterableDataset):
             # choices = [-1.0,1.0]
             # u = CSTR_F.generate_random_binary_signal_rep(choices,20,80,self.seq_len + n_skip, self.input_rng)
             # u = np.array([[i] for i in u])
-
             # To generate the white noise input signal
-            # u = self.input_rng.normal(size=(self.seq_len + n_skip, 1))
+            u = self.input_rng.normal(size=(self.seq_len + n_skip, 1))
 
-            # To generate the multisine input signal
-            u = generate_input(batch_size=1, N=self.seq_len + n_skip, p_low_pass=0.5, p_high_pass=0.05,
-                               rng=self.input_rng)[0].reshape(-1, 1)
+            # u = generate_input(batch_size=1, N=self.seq_len + n_skip, p_low_pass=0.5, p_high_pass=0.05,
+            #                    rng=self.input_rng)[0].reshape(-1, 1)
 
             # G1
             y1 = dlsim(*G1, u)
@@ -196,9 +194,10 @@ class WHDataset(IterableDataset):
             y = y3[n_skip:]
 
             if self.normalize:
+                u = (u - u.mean(axis=0)) / (u.std(axis=0) + 1e-6)
                 y = (y - y.mean(axis=0)) / (y.std(axis=0) + 1e-6)
 
-            e = self.noise_rng.normal(size=(self.seq_len, 1)) * self.noise  # noise term
+            e = self.noise_rng.normal(size=(self.seq_len, 1)) * 0.01 # noise term
             y = y + e
 
             u = u.astype(self.dtype)
@@ -227,6 +226,54 @@ class MultiIterableDataSet(IterableDataset):
             dataset_index = torch.randint(low=0, high=len(iterators), size=(1,))[0] # or any other dataset sampling logic...
             yield next(iterators[dataset_index])
 
+class CSTRDataset_numba(IterableDataset):
+    '''
+    This is the class with function of initialization, and of the iteration of the iterative call of the 
+    different initialization for each batch used.
+    '''
+    def __init__(self,seq_len = 500, par_fixed = [8314, 801, 3137, 851, 1000, 4183, 0.004377, 350, 0.4],
+             par_shifted = [69710000.0, -69710000.0, 20750000.0, 0.4, 350, 350], normalize = True,
+                 shift_seed=None, input_seed=None, noise_seed=None): 
+        '''
+        par_fixed = [R,rho,cp,U,rhoJ,cJ,Fss,TRss,Cass]
+        par_shifted = [E,lam,k0,Ca0,T0,TCin,UAJ]
+        '''
+        super(CSTRDataset_numba).__init__()
+        self.seq_len = seq_len+100
+        self.par_fixed = par_fixed
+        self.par_shifted = par_shifted
+        self.normalize = normalize
+        self.system_seed = shift_seed
+        self.input_seed = input_seed
+        self.noise_seed = noise_seed
+        self.shift_rng = np.random.default_rng(shift_seed)  # source of randomness for system generation
+        self.input_rng = np.random.default_rng(input_seed)  # source of randomness for input generation
+        self.noise_rng = np.random.default_rng(noise_seed)  # source of randomness for noise generation
+
+    
+    def __iter__(self):
+        
+        n_skip = 100
+        while True:
+            t, u,y = CSTR_F.MC_parameters_CSTR(self.seq_len, self.par_fixed, self.par_shifted,\
+                                               self.shift_rng,self.input_rng)
+
+            u = u[n_skip:]
+            y = y[n_skip:,:]
+
+            if self.normalize:
+                y = (y - y.mean(axis=0)) / (y.std(axis=0) + 1e-6)
+                u = (u - u.mean(axis=0)) / (u.std(axis=0) + 1e-6)
+
+
+
+            e = self.noise_rng.normal(size=(self.seq_len-n_skip, 3)) * 0.1 # noise term, you should add a different one in each component
+            y = y + e
+
+
+            u = u.astype('float32')
+            y = y.astype('float32')
+            yield torch.tensor(y), torch.tensor(u)
 
 class ConcatenatedIterableDataset(IterableDataset):
     def __init__(self, iterable_dataset1, iterable_dataset2):
@@ -242,11 +289,13 @@ class ConcatenatedIterableDataset(IterableDataset):
                         
 if __name__ == "__main__":
 
+
+
     # Create data loader
     mdlargs = {"strictly_proper":True, "mag_range": (0.8, 0.97), "phase_range": (0, math.pi / 2)}
     #train_ds = LinearDynamicalDataset(nx=5, nu=1, ny=1, seq_len=500, **mdlargs)
 
-    train_ds = WHDataset(shift_seed=42, input_seed=445)
+    train_ds = CSTRDataset_numba(shift_seed=42, input_seed=445)
     # train_ds = LinearDynamicalDataset(nx=5, nu=2, ny=3, seq_len=1000)
     train_dl = DataLoader(train_ds, batch_size=2)
     batch_y, batch_u = next(iter(train_dl))

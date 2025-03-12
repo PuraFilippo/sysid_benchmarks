@@ -151,14 +151,6 @@ def dlsim(A, B, C, D, u, x0=None):
     if x0 is None:
         nx = A.shape[0]
         x0 = zeros((nx,), dtype=u.dtype)
-
-    A = A.astype(np.float64)
-    B = B.astype(np.float64)
-    C = C.astype(np.float64)
-    D = D.astype(np.float64)
-    u = u.astype(np.float64)
-    x0 = x0.astype(np.float64)
-
     return _dlsim(A, B, C, D, u, x0)
 
 import torch
