@@ -4,7 +4,7 @@
 by Matteo Rufolo, Dario Piga, Gabriele Maroni, Marco Forgione. -->
 
 One of the author of this repository introduce the concept of model-free in-context learning for System Identification, where a *meta model* is trained to describe an entire class of dynamical systems, all details are written here  [In-context learning for model-free system identification](http://arxiv.org/abs/2308.13380)
-In this repository we enhance the original meta-modeling framework through three key innovations: formulating the learning task within a probabilistic framework; managing non-contiguous context and query windows; and integrating recurrent patching to effectively handle long context sequences.
+In this repository we present the following recent advances in the field: formulating the learning task within a probabilistic framework; presenting two techinques to handle long context sequences (patching and ensembling), showing how the *meta model* can be used to generate sythetic data for classical system identification problems
 
 
 ## Multi-step-ahead model-free simulation
@@ -12,7 +12,7 @@ In this repository we enhance the original meta-modeling framework through three
 With respect to the original paper we analyze only a multi-step-ahead simulation, using an updated encoder-decoder (machine-translation-like) Transformer architecture:
 
 <!-- ![machine-translation-like model-free simulation](fig/encoder_decoder_architecture.png "Generalized multi-step-ahead simulation") -->
-<img src="doc/paper/fig/encoder_decoder_architecture.png"  width="1400">
+<img src="fig/encoder_decoder_architecture.png"  width="1400">
 
 # Main files
 
@@ -21,15 +21,10 @@ The training are performed on the WH system class, and its script is:
 * [train_sim_WH_skip.py](train_sim_WH_skip.py)
 
 The script above accept command-line arguments to customize the architecture and aspects of the training. 
-The goal of this repository is to extend the work presented in [sysid-transformer](https://github.com/forgi86/sysid-transformers) analyzing longer sequence (till 40'000 timestamps) using the patch approach:
-<img src="doc/paper/fig/patch_sequence.png"  width="1400">
- and obtaining not only point estimate of the future output but even a confidence of the prediction. 
 
 <!-- Trained weights of all the Transformers discussed in the example section of the paper are available as assets in the [v0.3 Release](https://github.com/forgi86/sysid-transformers/releases/tag/v0.3). -->
 
-Jupyter notebooks that load the trained model to test ensambling effectiveness on new data and some recognized 
-non-linear benchmarks are also available in the notebook files [test_ensambling.ipynb](test_ensambling.ipynb) and 
-[benchmarks.ipynb](benchmarks.ipynb).
+Jupyter notebooks that load the trained model to test ensambling and patching effectiveness on new data, [test_ensambling.ipynb](test_ensambling.ipynb) for in-distribution analysis and [test_CSTR_patching.ipynb](test_CSTR_patching.ipynb) for testing on a new system class (CSTR), and some recognized non-linear benchmarks ([benchmarks.ipynb](benchmarks.ipynb)).
 
 A more in depth analysis on the CED bechmark through synthetic data is also performed through the [synthetic_CED.py](synthetic_CED.py) script.
 
