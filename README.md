@@ -11,7 +11,7 @@ In this repository we present the following recent advances in the field: formul
 
 With respect to the original paper we analyze only a multi-step-ahead simulation, using an updated encoder-decoder (machine-translation-like) Transformer architecture:
 
-<!-- ![machine-translation-like model-free simulation](fig/encoder_decoder_architecture.png "Generalized multi-step-ahead simulation") -->
+![machine-translation-like model-free simulation](fig/encoder_decoder_architecture.png "Generalized multi-step-ahead simulation")
 <img src="fig/encoder_decoder_architecture.png"  width="1400">
 
 # Main files
