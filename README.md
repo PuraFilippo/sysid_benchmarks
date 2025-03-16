@@ -22,7 +22,7 @@ The training are performed on the WH system class, and its script is:
 
 The script above accept command-line arguments to customize the architecture and aspects of the training. 
 
-<!-- Trained weights of all the Transformers discussed in the example section of the paper are available as assets in the [v0.3 Release](https://github.com/forgi86/sysid-transformers/releases/tag/v0.3). -->
+Trained weights of all the Transformers discussed in the example section of the paper are available as assets in the [v0.1 Release](https://github.com/PuraFilippo/sysid_benchmarks/releases/tag/v0.1).
 
 Jupyter notebooks that load the trained model to test ensambling and patching effectiveness on new data, [test_ensambling.ipynb](test_ensambling.ipynb) for in-distribution analysis and [test_CSTR_patching.ipynb](test_CSTR_patching.ipynb) for testing on a new system class (CSTR), and some recognized non-linear benchmarks ([benchmarks.ipynb](benchmarks.ipynb)).
 
