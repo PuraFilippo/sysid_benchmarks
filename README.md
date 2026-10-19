@@ -70,18 +70,11 @@ If you find this project useful, we encourage you to:
 * Star this repository :star: 
 
 
-
-<!-- * Cite the [paper](https://arxiv.org/abs/2308.13380) 
+* Cite the [paper](https://arxiv.org/abs/2610.13411) 
 ```
 @article{forgione2023from,
   author={Forgione, Marco and Pura, Filippo and Piga, Dario},
-  journal={IEEE Control Systems Letters}, 
-  title={From System Models to Class Models:
-   An In-Context Learning Paradigm}, 
-  year={2023},
-  volume={7},
-  number={},
-  pages={3513-3518},
-  doi={10.1109/LCSYS.2023.3335036}
+  journal={Automatica (in press)}, 
+  title={In-Context Learning for System Identification: Probabilistic Formulation, Long-Sequence Handling, and Benchmark Validation}, 
+  year={2026},
 }
-``` -->
