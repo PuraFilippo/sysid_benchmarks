@@ -1,10 +1,10 @@
-# In-context learning for model-free system identification
+# In-Context Learning for System Identification: Probabilistic Formulation, Long-Sequence Handling, and Benchmark Validation
 
-<!-- This repository contains the Python code to reproduce the results of the paper [In-context learning for model-free system identification](http://arxiv.org/abs/2308.13380)
-by Matteo Rufolo, Dario Piga, Gabriele Maroni, Marco Forgione. -->
+Code accompanying the paper *In-Context Learning for System Identification: Probabilistic Formulation, Long-Sequence Handling, and Benchmark Validation* by Matteo Rufolo, Dario Piga, Filippo Pura and Marco Forgione (Automatica 2026)
 
-One of the author of this repository introduce the concept of model-free in-context learning for System Identification, where a *meta model* is trained to describe an entire class of dynamical systems, all details are written here  [In-context learning for model-free system identification](http://arxiv.org/abs/2308.13380)
-In this repository we present the following recent advances in the field: formulating the learning task within a probabilistic framework; presenting two techinques to handle long context sequences (patching and ensembling), showing how the *meta model* can be used to generate sythetic data for classical system identification problems
+## ABsract 
+ 
+Traditional system identification typically involves two steps: initially, training data is processed to estimate a model of the system of interest; then, the model is used to predict outputs for new input queries. In contrast, recent in-context learning approaches learn a meta model that maps directly from training data and query inputs to outputs in a zero-shot fashion, bypassing explicit model estimation. This approach leverages a meta model trained offline, on large sets of synthetically generated data, to emulate the behavior of a system identification algorithm. In this work, we advance this meta-learning framework for system identification in three directions. First, we develop a unified probabilistic meta-identification architecture that combines a Transformer-based encoder-decoder with tailored mechanisms for handling long training sequences, enabling calibrated predictions over long horizons. Second, we show how a pre-trained meta model can act as an uncertainty-aware synthetic data generator for classical system identification, providing task-specific data that regularize parametric models when real data are scarce. Third, we systematically evaluate the framework on standard nonlinear system identification benchmarks and on a challenging out-of-distribution scenario, demonstrating competitive accuracy with state-of-the-art methods and strong generalization, including cases where input-only adaptation is sufficient to handle significant distribution shifts. 
 
 
 ## Multi-step-ahead model-free simulation
