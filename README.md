@@ -73,7 +73,7 @@ If you find this project useful, we encourage you to:
 * Cite the [paper](https://arxiv.org/abs/2610.13411) 
 ```
 @article{forgione2023from,
-  author={Forgione, Marco and Pura, Filippo and Piga, Dario},
+  author={Rufolo, Matteo and Piga, Dario and Pura, Filippo and Forgione, Marco},
   journal={Automatica (in press)}, 
   title={In-Context Learning for System Identification: Probabilistic Formulation, Long-Sequence Handling, and Benchmark Validation}, 
   year={2026},
